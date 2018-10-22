@@ -1,0 +1,57 @@
+# Disable CI triggers, we don't want a build per merge to Master
+trigger: none
+
+resources:
+  containers:
+  - container: LinuxContainer
+    image: microsoft/dotnet-buildtools-prereqs:rhel7_prereqs_2
+
+variables:
+  _commonProps: -includetests /p:ArchGroup=x64 /p:ConfigurationGroup=Debug /p:SkipTests=true /p:ArchiveTests=true
+  _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
+  _sendToHelixArgs: eng/sendtohelix.proj /t:test /p:HelixAccessToken=$(_helixToken)
+
+phases:
+  - template: /eng/common/templates/phases/base.yml
+    parameters:
+      name: Linux
+      queue:
+        container: LinuxContainer
+        name: Hosted Ubuntu 1604
+      steps:
+        - script: ./build.sh --ci $(_commonProps)
+          displayName: Build Sources and Tests
+        - script: ./eng/common/msbuild.sh
+            --warnaserror false src/upload-tests.proj
+            /t:CompressRuntimeDir
+            /p:ArchGroup=x64
+            /p:ConfigurationGroup=Debug
+            /p:TargetOS=Linux
+          displayName: Compress Runtime Directory
+        - script: ./eng/common/msbuild.sh
+            --warnaserror false
+            /p:TargetOS=Linux
+            /p:HelixTargetQueues=Ubuntu.1604.Amd64.Open
+            $(_sendToHelixArgs)
+          displayName: Send to Helix
+  - template: /eng/common/templates/phases/base.yml
+    parameters:
+      name: Windows
+      queue:
+        name: dotnet-external-temp
+      steps:
+        - script: build.cmd -ci $(_commonProps)
+          displayName: Build Sources and Tests
+        - powershell: eng\common\msbuild.ps1
+            -warnaserror:0 src\upload-tests.proj
+            /t:CompressRuntimeDir
+            /p:ArchGroup=x64
+            /p:ConfigurationGroup=Debug
+            /p:TargetOS=Windows_NT
+          displayName: Compress Runtime Directory
+        - powershell: eng\common\msbuild.ps1
+            -warnaserror:0
+            /p:TargetOS=Windows_NT
+            /p:HelixTargetQueues=Windows.10.Amd64.ClientRS4.ES.Open
+            $(_sendToHelixArgs)
+          displayName: Send to Helix

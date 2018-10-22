@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.DotNet.Helix.Sdk">
+  <PropertyGroup>
+    <!-- Set helix source -->
+    <HelixSourcePrefix>pr/</HelixSourcePrefix>
+    <HelixSourcePrefix Condition="'$(OfficialBuildId)' != ''">official/</HelixSourcePrefix>
+    <HelixSource Condition="'$(HelixSource)' == ''">$(HelixSourcePrefix)dotnet/corefx</HelixSource>
+    <HelixSource Condition="'$(BUILD_SOURCEBRANCH)' != ''">$(HelixSource)/$(BUILD_SOURCEBRANCH)</HelixSource>
+    
+    <!-- Set helix build to build number if available -->
+    <HelixBuild Condition="'$(HelixBuild)' == ''">$(BUILD_BUILDNUMBER)</HelixBuild>
+    <HelixBuild Condition="'$(HelixBuild)' == ''">default</HelixBuild>
+
+    <HelixType Condition="'$(HelixType)' == ''">test/functional/cli</HelixType>
+    
+    <!-- We need to enable xunit reporter so that it parses test results -->
+    <EnableXunitReporter>true</EnableXunitReporter>
+    
+    <!-- The helix runtime payload and the tests to run -->
+    <HelixCorrelationPayload Condition="'$(HelixCorrelationPayload)' == ''">$(BUILD_SOURCESDIRECTORY)\*\tests\*\archive\test-runtime*.zip</HelixCorrelationPayload>
+    <WorkItemArchiveWildCard Condition="'$(WorkItemArchiveWildCard)' == ''">$(BUILD_SOURCESDIRECTORY)\*\tests\*\archive\tests\**\*.zip</WorkItemArchiveWildCard>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(HelixCommand)' == ''">
+    <HelixCommand Condition="'$(TargetsWindows)' == 'true'">RunTests.cmd %HELIX_CORRELATION_PAYLOAD%</HelixCommand>
+    <HelixCommand Condition="'$(TargetsWindows)' != 'true'">./RunTests.sh $HELIX_CORRELATION_PAYLOAD</HelixCommand>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HelixCorrelationPayload Include="$(HelixCorrelationPayload)" />
+  </ItemGroup>
+
+  <Target Name="BuildHelixWorkItem"
+          BeforeTargets="Test">
+    <ItemGroup>
+      <_WorkItem Include="$(WorkItemArchiveWildCard)" Exclude="$(HelixCorrelationPayload)" />
+
+      <HelixWorkItem Include="@(_WorkItem -> '%(FileName)')">
+        <PayloadArchive>%(Identity)</PayloadArchive>
+        <Command>$(HelixCommand)</Command>
+      </HelixWorkItem>
+    </ItemGroup>
+  </Target>
+</Project>
