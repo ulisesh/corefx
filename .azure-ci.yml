@@ -3,55 +3,20 @@ trigger: none
 
 resources:
   containers:
-  - container: LinuxContainer
+  - container: RhelContainer
     image: microsoft/dotnet-buildtools-prereqs:rhel7_prereqs_2
 
-variables:
-  _commonProps: -includetests /p:ArchGroup=x64 /p:ConfigurationGroup=Debug /p:SkipTests=true /p:ArchiveTests=true
-  _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-  _sendToHelixArgs: eng/sendtohelix.proj /t:test /p:HelixAccessToken=$(_helixToken)
-
 phases:
-  - template: /eng/common/templates/phases/base.yml
+  - template: /eng/corefx-steps.yml
     parameters:
-      name: Linux
+      name: Linux x64 Release
       queue:
-        container: LinuxContainer
+        container: RhelContainer
         name: Hosted Ubuntu 1604
-      steps:
-        - script: ./build.sh --ci $(_commonProps)
-          displayName: Build Sources and Tests
-        - script: ./eng/common/msbuild.sh
-            --warnaserror false src/upload-tests.proj
-            /t:CompressRuntimeDir
-            /p:ArchGroup=x64
-            /p:ConfigurationGroup=Debug
-            /p:TargetOS=Linux
-          displayName: Compress Runtime Directory
-        - script: ./eng/common/msbuild.sh
-            --warnaserror false
-            /p:TargetOS=Linux
-            /p:HelixTargetQueues=Ubuntu.1604.Amd64.Open
-            $(_sendToHelixArgs)
-          displayName: Send to Helix
-  - template: /eng/common/templates/phases/base.yml
-    parameters:
-      name: Windows
-      queue:
-        name: dotnet-external-temp
-      steps:
-        - script: build.cmd -ci $(_commonProps)
-          displayName: Build Sources and Tests
-        - powershell: eng\common\msbuild.ps1
-            -warnaserror:0 src\upload-tests.proj
-            /t:CompressRuntimeDir
-            /p:ArchGroup=x64
-            /p:ConfigurationGroup=Debug
-            /p:TargetOS=Windows_NT
-          displayName: Compress Runtime Directory
-        - powershell: eng\common\msbuild.ps1
-            -warnaserror:0
-            /p:TargetOS=Windows_NT
-            /p:HelixTargetQueues=Windows.10.Amd64.ClientRS4.ES.Open
-            $(_sendToHelixArgs)
-          displayName: Send to Helix
+        matrix:
+          x64_Release:
+            _configuration: Release
+            _archGroup: x64
+      framework: netcoreapp
+      targetOS: Linux
+      helixTargetQueues: Centos.74.Amd64.Open;RedHat.74.Amd64.Open;Debian.87.Amd64.Open;Ubuntu.1404.Amd64.Open;Ubuntu.1604.Amd64.Open;Ubuntu.1804.Amd64.Open;OpenSuse.423.Amd64.Open;Fedora.27.Amd64.Open
