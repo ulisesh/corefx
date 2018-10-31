@@ -35,7 +35,7 @@ phases:
         ${{ if ne(parameters.runtimeOS, '') }}:
           _runtimeOSParam: /p:RuntimeOS=${{ parameters.runtimeOS }}
 
-        ${{ if eq(parameteres.submitToHelix, 'true') }}:
+        ${{ if eq(parameters.submitToHelix, 'true') }}:
           _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
           _sendToHelixArgs: eng/sendtohelix.proj
                             /t:test 
