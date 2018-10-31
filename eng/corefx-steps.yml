@@ -57,7 +57,7 @@ phases:
                   /p:ConfigurationGroup=$(_configuration)
                   /p:SkipTests=${{ parameters.skipTests }}
           displayName: Build Sources and Tests
-        - ${{ if eq(parameteres.submitToHelix, 'true') }}:
+        - ${{ if eq(parameters.submitToHelix, 'true') }}:
             - script: $(_msbuildCommand)
                       src\upload-tests.proj
                       /t:CompressRuntimeDir
