@@ -9,7 +9,7 @@ resources:
 phases:
   - template: /eng/corefx-steps.yml
     parameters:
-      name: Linux x64 Release
+      name: Linux_x64_Release
       queue:
         container: RhelContainer
         name: Hosted Ubuntu 1604
