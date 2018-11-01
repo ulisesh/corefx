@@ -20,7 +20,8 @@ phases:
     parameters:
       variables:
         _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
-        
+        _archiveTests: false
+
         ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
           _buildScript: build.cmd
           _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0
@@ -37,10 +38,12 @@ phases:
 
         ${{ if eq(parameters.submitToHelix, 'true') }}:
           _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
+          _archiveTests: true
           _sendToHelixArgs: eng/sendtohelix.proj
                             /t:test 
                             /p:HelixAccessToken=$(_helixToken)
                             /p:HelixTargetQueues=${{ parameters.helixTargetQueues }}
+                            /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }}
                             $(_targetOSParam)
 
       name: ${{ parameters.name }}
@@ -56,6 +59,7 @@ phases:
                   /p:ArchGroup=$(_archGroup)
                   /p:ConfigurationGroup=$(_configuration)
                   /p:SkipTests=${{ parameters.skipTests }}
+                  /p:ArchiveTests=$(_archiveTests)
           displayName: Build Sources and Tests
         - ${{ if eq(parameters.submitToHelix, 'true') }}:
             - script: $(_msbuildCommand)
