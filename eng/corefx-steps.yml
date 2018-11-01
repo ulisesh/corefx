@@ -42,7 +42,7 @@ phases:
           _sendToHelixArgs: eng/sendtohelix.proj
                             /t:test 
                             /p:HelixAccessToken=$(_helixToken)
-                            /p:HelixTargetQueues=${{ parameters.helixTargetQueues }}
+                            /p:HelixTargetQueues="${{ parameters.helixTargetQueues }}"
                             /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }}
                             $(_targetOSParam)
 
@@ -63,7 +63,7 @@ phases:
           displayName: Build Sources and Tests
         - ${{ if eq(parameters.submitToHelix, 'true') }}:
             - script: $(_msbuildCommand)
-                      src\upload-tests.proj
+                      src/upload-tests.proj
                       /t:CompressRuntimeDir
                       /p:ArchGroup=$(_archGroup)
                       /p:ConfigurationGroup=$(_configuration)
