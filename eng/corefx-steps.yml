@@ -54,7 +54,7 @@ phases:
         - script: $(_buildScript)
                   $(_buildCommonArgs)
                   -includetests
-                  -framework $(_targetGroup)
+                  -framework ${{ parameters.framework }}
                   $(_runtimeOSParam)
                   /p:ArchGroup=$(_archGroup)
                   /p:ConfigurationGroup=$(_configuration)
