@@ -36,3 +36,25 @@ phases:
       framework: netcoreapp
       targetOS: Windows_NT
       helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+
+jobs:
+  - job: DefaultMatrix
+    displayName: Build
+    strategy:
+      maxParallel: 99
+      matrix:
+        Windows_x64_Debug:
+          _configuration: Debug
+          _archGroup: x64
+          _targetOS: Windows_NT
+          _framework: netcoreapp
+          _helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+    steps:
+      - template: /eng/corefx-steps.yml
+        parameters:
+          name: Windows
+          queue:
+            name: dotnet-external-temp
+          framework: $(_framework)
+          targetOS: $(_targetOS)
+          helixTargetQueues: $(_helixTargetQueues)
