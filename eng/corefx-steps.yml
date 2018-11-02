@@ -11,7 +11,6 @@ jobs:
   - job: ${{ parameters.name }}
     variables:
       _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
-      _archiveTests: false
 
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
         _buildScript: build.cmd
@@ -27,6 +26,8 @@ jobs:
       ${{ if ne(parameters.runtimeOS, '') }}:
         _runtimeOSParam: /p:RuntimeOS=${{ parameters.runtimeOS }}
 
+      ${{ if ne(parameters.submitToHelix, 'true') }}:
+        _archiveTests: false
       ${{ if eq(parameters.submitToHelix, 'true') }}:
         _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
         _archiveTests: true
