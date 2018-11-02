@@ -52,4 +52,4 @@ jobs:
             helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
       pool:
         name: dotnet-external-temp
-      targetOS: $(_targetOS)
+      targetOS: $[ variables['_targetOS'] ]
