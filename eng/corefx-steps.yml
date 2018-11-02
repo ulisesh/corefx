@@ -6,6 +6,7 @@ parameters:
   targetOS: ''
   testOuterloop: false
   buildExtraArguments: ''
+  container: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -34,6 +35,8 @@ jobs:
       ${{ insert }}: ${{ parameters.pool }}
     strategy:
       ${{ insert }}: ${{ parameters.strategy }}
+    container:
+      ${{ insert }}: ${{ parameters.container }}
     steps:
       - script: $(_buildScript)
               $(_buildCommonArgs)
