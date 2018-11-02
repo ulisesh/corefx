@@ -1,7 +1,7 @@
 parameters:
   name: ''
   pool: {}
-  stategy: {}
+  strategy: {}
   submitToHelix: true
   testOuterloop: false
   skipTests: true
@@ -35,7 +35,7 @@ jobs:
 
     pool:
       ${{ insert }}: ${{ parameters.pool }}
-    stategy:
+    strategy:
       ${{ insert }}: ${{ parameters.strategy }}
     steps:
       - script: $(_buildScript)
