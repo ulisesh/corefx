@@ -45,7 +45,7 @@ jobs:
               /p:SkipTests=${{ parameters.skipTests }}
               /p:ArchiveTests=$(submitToHelix)
               /p:Outerloop=${{ parameters.testOuterloop }}
-              $(buildExtraArguments)
+              $(buildExtraArguments) --?
         displayName: Build Sources and Tests
 
       - script: $(_msbuildCommand)
@@ -55,8 +55,8 @@ jobs:
                 /p:ConfigurationGroup=$(_configuration)
                 $(_targetOSParam)
         displayName: Compress Runtime Directory
-        condition: eq(variables['submitToHelix'], 'true')
+        condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
 
       - script: $(_msbuildCommand) $(_sendToHelixArgs)
         displayName: Send to Helix
-        condition: eq(variables['submitToHelix'], 'true')
+        condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
