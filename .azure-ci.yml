@@ -38,10 +38,8 @@ resources:
 #       helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
 
 variables:
-  _netcoreappQueues:
-    { windowsQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open,
-    nanoQueue: Windows.10.Nano.Amd64.Open }
-  _netcoreappDefaultQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+  _netcoreappWindowsQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+  _nanoQueue: Windows.10.Nano.Amd64.Open
   _linuxDefaultQueues: Centos.74.Amd64.Open;RedHat.74.Amd64.Open;Debian.87.Amd64.Open;Ubuntu.1404.Amd64.Open;Ubuntu.1604.Amd64.Open;Ubuntu.1804.Amd64.Open;OpenSuse.423.Amd64.Open;Fedora.27.Amd64.Open
 
 jobs:
@@ -57,7 +55,7 @@ jobs:
             _configuration: Debug
             _archGroup: x64
             framework: netcoreapp
-            helixTargetQueues: $(_netcoreappQueues.WindowsQueues);$(_netcoreappQueues.nanoQueue)
+            helixTargetQueues: $(_netcoreappWindowsQueues);$(_nanoQueue)
             submitToHelix: true
 
           # netcoreapp windows x86 release
@@ -65,13 +63,13 @@ jobs:
             _configuration: Release
             _archGroup: x86
             framework: netcoreapp
-            helixTargetQueues: $(_netcoreappQueues.WindowsQueues)
+            helixTargetQueues: $(_netcoreappWindowsQueues)
             submitToHelix: true
       pool:
         name: dotnet-external-temp
       targetOS: Windows_NT
   
-    # Linux legs
+  #   # Linux legs
   # - template: /eng/corefx-steps.yml
   #   parameters:
   #     name: Build
