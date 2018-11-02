@@ -5,6 +5,7 @@ parameters:
   skipTests: true
   targetOS: ''
   testOuterloop: false
+  buildExtraParameters: ''
 
 jobs:
   - job: ${{ parameters.name }}
