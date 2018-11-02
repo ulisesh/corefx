@@ -45,7 +45,7 @@ jobs:
               /p:SkipTests=${{ parameters.skipTests }}
               /p:ArchiveTests=$(submitToHelix)
               /p:Outerloop=${{ parameters.testOuterloop }}
-              $(buildExtraArguments)
+              ${{ parameters.buildExtraArguments }}
         displayName: Build Sources and Tests
 
       - script: $(_msbuildCommand)
