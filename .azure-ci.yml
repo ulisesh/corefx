@@ -50,5 +50,5 @@ jobs:
             targetOS: Windows_NT
             framework: netcoreapp
             helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
-        pool:
-          name: dotnet-external-temp
+      pool:
+        name: dotnet-external-temp
