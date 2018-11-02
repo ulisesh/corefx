@@ -6,7 +6,7 @@ parameters:
   testOuterloop: false
   skipTests: true
   runtimeOS: ''
-  targetOS: $(targetOS)
+  targetOS: ''
 
 jobs:
   - job: ${{ parameters.name }}
