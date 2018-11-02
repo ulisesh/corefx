@@ -2,17 +2,25 @@ parameters:
   name: ''
   pool: {}
   strategy: {}
-  submitToHelix: true
-  testOuterloop: false
   skipTests: true
-  runtimeOS: ''
   targetOS: ''
+  testOuterloop: false
 
 jobs:
   - job: ${{ parameters.name }}
     variables:
       _targetOSParam: /p:TargetOS={{ parameters.targetOS }}
 
+      # Helix stuff
+      _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
+      _sendToHelixArgs: eng/sendtohelix.proj
+                        /t:test
+                        /p:HelixAccessToken=$(_helixToken)
+                        /p:\"HelixTargetQueues=$(helixTargetQueues)\"
+                        /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }}
+                        $(_targetOSParam)
+      
+      # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
         _buildScript: build.cmd
         _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0
@@ -22,40 +30,33 @@ jobs:
         _msbuildCommand: ./eng/common/msbuild.sh --warnaserror false
         _buildCommonArgs: --ci
 
-      ${{ if eq(parameters.runtimeOS, '') }}:
-        _runtimeOSParam: ''
-      ${{ if ne(parameters.runtimeOS, '') }}:
-        _runtimeOSParam: /p:RuntimeOS=${{ parameters.runtimeOS }}
-
-      ${{ if ne(parameters.submitToHelix, 'true') }}:
-        _archiveTests: false
-      ${{ if eq(parameters.submitToHelix, 'true') }}:
-        _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-        _archiveTests: true
-        _sendToHelixArgs: eng/sendtohelix.proj /t:test /p:HelixAccessToken=$(_helixToken) /p:\"HelixTargetQueues=$(helixTargetQueues)\" /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
-
     pool:
       ${{ insert }}: ${{ parameters.pool }}
     strategy:
       ${{ insert }}: ${{ parameters.strategy }}
     steps:
       - script: $(_buildScript)
-                $(_buildCommonArgs)
-                -includetests
-                -framework $(framework)
-                $(_runtimeOSParam)
+              $(_buildCommonArgs)
+              -includetests
+              -framework $(framework)
+              $(_runtimeOSParam)
+              /p:ArchGroup=$(_archGroup)
+              /p:ConfigurationGroup=$(_configuration)
+              /p:SkipTests=${{ parameters.skipTests }}
+              /p:ArchiveTests=$(submitToHelix)
+              /p:Outerloop=${{ parameters.testOuterloop }}
+              $(buildExtraArguments)
+        displayName: Build Sources and Tests
+
+      - script: $(_msbuildCommand)
+                src/upload-tests.proj
+                /t:CompressRuntimeDir
                 /p:ArchGroup=$(_archGroup)
                 /p:ConfigurationGroup=$(_configuration)
-                /p:SkipTests=${{ parameters.skipTests }}
-                /p:ArchiveTests=$(_archiveTests)
-        displayName: Build Sources and Tests
-      - ${{ if eq(parameters.submitToHelix, 'true') }}:
-          - script: $(_msbuildCommand)
-                    src/upload-tests.proj
-                    /t:CompressRuntimeDir
-                    /p:ArchGroup=$(_archGroup)
-                    /p:ConfigurationGroup=$(_configuration)
-                    $(_targetOSParam)
-            displayName: Compress Runtime Directory
-          - script: $(_msbuildCommand) $(_sendToHelixArgs)
-            displayName: Send to Helix
+                $(_targetOSParam)
+        displayName: Compress Runtime Directory
+        condition: eq(variables['submitToHelix'], 'true')
+
+      - script: $(_msbuildCommand) $(_sendToHelixArgs)
+        displayName: Send to Helix
+        condition: eq(variables['submitToHelix'], 'true')
