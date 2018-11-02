@@ -14,10 +14,9 @@ jobs:
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj
+      _sendToHelixArgs: eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\"
                         /t:test
                         /p:HelixAccessToken=$(_helixToken)
-                        /p:\"HelixTargetQueues=$(helixTargetQueues)\"
                         /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }}
                         $(_targetOSParam)
       
