@@ -9,7 +9,7 @@ parameters:
 jobs:
   - job: ${{ parameters.name }}
     variables:
-      _targetOSParam: /p:TargetOS={{ parameters.targetOS }}
+      _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
