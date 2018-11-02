@@ -69,28 +69,23 @@ jobs:
         name: dotnet-external-temp
       targetOS: Windows_NT
   
-  #   # Linux legs
-  # - template: /eng/corefx-steps.yml
-  #   parameters:
-  #     name: Build
-  #     strategy:
-  #       maxParallel: 99
-  #       matrix:
-  #         # netcoreapp windows x64 debug
-  #         Windows_x64_Debug:
-  #           _configuration: Debug
-  #           _archGroup: x64
-  #           framework: netcoreapp
-  #           helixTargetQueues: $(_netcoreappBaseQueues);Windows.10.Nano.Amd64.Open
-  #           submitToHelix: true
+    # Linux legs
+  - template: /eng/corefx-steps.yml
+    parameters:
+      name: Linux
+      strategy:
+        maxParallel: 99
+        matrix:
+          # netcoreapp linux x64 release
+          x64_Release:
+            _configuration: Release
+            _archGroup: x64
+            framework: netcoreapp
+            helixTargetQueues: $(_linuxDefaultQueues)
+            submitToHelix: true
+            _dockerContainer: RhelContainer
+      pool:
+        name: dotnet-external-temp
 
-  #         # netcoreapp windows x86 release
-  #         Windows_x86_Release:
-  #           _configuration: Release
-  #           _archGroup: x86
-  #           framework: netcoreapp
-  #           helixTargetQueues: $(_netcoreappBaseQueues)
-  #           submitToHelix: true
-  #     pool:
-  #       name: dotnet-external-temp
-  #     targetOS: Windows_NT
+      targetOS: Linux
+      container: $[ variables['_dockerContainer'] ]
