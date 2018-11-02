@@ -10,7 +10,7 @@ parameters:
 jobs:
   - job: ${{ parameters.name }}
     variables:
-      _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
+      _targetOSParam: /p:TargetOS=$(targetOS)
 
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
         _buildScript: build.cmd
@@ -31,7 +31,7 @@ jobs:
       ${{ if eq(parameters.submitToHelix, 'true') }}:
         _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
         _archiveTests: true
-        _sendToHelixArgs: eng/sendtohelix.proj /t:test /p:HelixAccessToken=$(_helixToken) /p:\"HelixTargetQueues=${{ parameters.helixTargetQueues }}\" /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
+        _sendToHelixArgs: eng/sendtohelix.proj /t:test /p:HelixAccessToken=$(_helixToken) /p:\"HelixTargetQueues=$(helixTargetQueues)\" /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
 
     pool:
       ${{ insert }}: ${{ parameters.pool }}
@@ -41,7 +41,7 @@ jobs:
       - script: $(_buildScript)
                 $(_buildCommonArgs)
                 -includetests
-                -framework ${{ parameters.framework }}
+                -framework $(framework)
                 $(_runtimeOSParam)
                 /p:ArchGroup=$(_archGroup)
                 /p:ConfigurationGroup=$(_configuration)
