@@ -85,7 +85,7 @@ jobs:
             submitToHelix: true
             _dockerContainer: RhelContainer
       pool:
-        name: dotnet-external-temp
+        name: Hosted Ubuntu 1604
 
       targetOS: Linux
       container: $[ variables['_dockerContainer'] ]
