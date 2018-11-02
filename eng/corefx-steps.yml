@@ -17,7 +17,7 @@ jobs:
         _buildScript: build.cmd
         _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0
         _buildCommonArgs: -ci
-      ${{ if not(contains(parameters.targetOS, 'Windows'))) }}:
+      ${{ if not(contains(parameters.targetOS, 'Windows')) }}:
         _buildScript: ./build.sh /p:TargetOS=${{ parameters.targetOS }}
         _msbuildCommand: ./eng/common/msbuild.sh --warnaserror false
         _buildCommonArgs: --ci
