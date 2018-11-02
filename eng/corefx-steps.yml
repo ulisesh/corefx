@@ -5,7 +5,7 @@ parameters:
   skipTests: true
   targetOS: ''
   testOuterloop: false
-  buildExtraParameters: ''
+  buildExtraArguments: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -40,7 +40,6 @@ jobs:
               $(_buildCommonArgs)
               -includetests
               -framework $(framework)
-              $(_runtimeOSParam)
               /p:ArchGroup=$(_archGroup)
               /p:ConfigurationGroup=$(_configuration)
               /p:SkipTests=${{ parameters.skipTests }}
