@@ -12,11 +12,11 @@ jobs:
     variables:
       _targetOSParam: /p:TargetOS=$(targetOS)
 
-      ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
+      ${{ if eq(targetOS, 'Windows_NT') }}:
         _buildScript: build.cmd
         _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0
         _buildCommonArgs: -ci
-      ${{ if ne(parameters.targetOS, 'Windows_NT') }}:
+      ${{ if ne(targetOS, 'Windows_NT') }}:
         _buildScript: ./build.sh
         _msbuildCommand: ./eng/common/msbuild.sh --warnaserror false
         _buildCommonArgs: --ci
