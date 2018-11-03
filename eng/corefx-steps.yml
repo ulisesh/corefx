@@ -35,8 +35,9 @@ jobs:
       ${{ insert }}: ${{ parameters.pool }}
     strategy:
       ${{ insert }}: ${{ parameters.strategy }}
-    container:
-      ${{ insert }}: ${{ parameters.container }}
+
+    container: ${{ parameters.container }}
+
     steps:
       - script: $(_buildScript)
               $(_buildCommonArgs)
