@@ -40,6 +40,7 @@ jobs:
     container: ${{ parameters.container }}
 
     steps:
+      - script: echo $(_buildExtraArguments)
       - script: $(_buildScript)
               $(_buildCommonArgs)
               -includetests
