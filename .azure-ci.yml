@@ -5,37 +5,8 @@ resources:
   containers:
   - container: RhelContainer
     image: microsoft/dotnet-buildtools-prereqs:rhel7_prereqs_2
-
-# phases:
-#   - template: /eng/corefx-steps.yml
-#     parameters:
-#       name: Linux
-#       queue:
-#         container: RhelContainer
-#         name: Hosted Ubuntu 1604
-#         matrix:
-#           x64_Release:
-#             _configuration: Release
-#             _archGroup: x64
-#       framework: netcoreapp
-#       targetOS: Linux
-#       helixTargetQueues: Centos.74.Amd64.Open;RedHat.74.Amd64.Open;Debian.87.Amd64.Open;Ubuntu.1404.Amd64.Open;Ubuntu.1604.Amd64.Open;Ubuntu.1804.Amd64.Open;OpenSuse.423.Amd64.Open;Fedora.27.Amd64.Open
-
-#   - template: /eng/corefx-steps.yml
-#     parameters:
-#       name: Windows
-#       queue:
-#         name: dotnet-external-temp
-#         matrix:
-#           x64_Debug:
-#             _configuration: Debug
-#             _archGroup: x64
-#           x86_Release:
-#             _configuration: Release
-#             _archGroup: x86
-#       framework: netcoreapp
-#       targetOS: Windows_NT
-#       helixTargetQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+  - container: AlpineContainer
+    image: microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
 
 variables:
   _netcoreappWindowsQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
@@ -84,8 +55,18 @@ jobs:
             helixTargetQueues: $(_linuxDefaultQueues)
             submitToHelix: true
             _dockerContainer: RhelContainer
+
+          # linux-musl x64 debug
+          musl_x64_Debug:
+            _configuration: Debug
+            _archGroup: x64
+            framework: netcoreapp
+            submitToHelix: false
+            _dockerContainer: AlpineContainer
+            _buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
       pool:
         name: Hosted Ubuntu 1604
 
       targetOS: Linux
       container: $[ variables['_dockerContainer'] ]
+      buildExtraArguments: $[ variables['_buildExtraArguments'] ]
