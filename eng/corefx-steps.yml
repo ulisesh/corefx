@@ -5,13 +5,14 @@ parameters:
   skipTests: true
   targetOS: ''
   testOuterloop: false
-  buildExtraArguments: ''
+  # buildExtraArguments: ''
   container: ''
 
 jobs:
   - job: ${{ parameters.name }}
     variables:
       _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
+      buildExtraArguments: $[ variables['_buildExtraArguments'] ]
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
@@ -48,7 +49,7 @@ jobs:
               /p:SkipTests=${{ parameters.skipTests }}
               /p:ArchiveTests=$(submitToHelix)
               /p:Outerloop=${{ parameters.testOuterloop }}
-              $[ variables['_buildExtraArguments'] ]
+              $(buildExtraArguments)
         displayName: Build Sources and Tests
 
       - script: $(_msbuildCommand)
