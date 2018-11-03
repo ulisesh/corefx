@@ -69,4 +69,4 @@ jobs:
 
       targetOS: Linux
       container: $[ variables['_dockerContainer'] ]
-      buildExtraArguments: $[ variables['_buildExtraArguments'] ]
+      buildExtraArguments: $(_buildExtraArguments)
