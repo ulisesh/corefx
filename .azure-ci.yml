@@ -62,7 +62,7 @@ jobs:
             _archGroup: x64
             framework: netcoreapp
             submitToHelix: false
-            _dockerContainer: AlpineContainer
+            # _dockerContainer: AlpineContainer
             _buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
       pool:
         name: Hosted Ubuntu 1604
