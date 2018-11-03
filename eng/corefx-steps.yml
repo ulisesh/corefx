@@ -12,7 +12,7 @@ jobs:
   - job: ${{ parameters.name }}
     variables:
       _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
-      buildExtraArguments: $[ variables['_buildExtraArguments'] ]
+      _buildExtraArguments: $[ variables['buildExtraArguments'] ]
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
@@ -49,7 +49,7 @@ jobs:
               /p:SkipTests=${{ parameters.skipTests }}
               /p:ArchiveTests=$(submitToHelix)
               /p:Outerloop=${{ parameters.testOuterloop }}
-              $(buildExtraArguments)
+              $(_buildExtraArguments)
         displayName: Build Sources and Tests
 
       - script: $(_msbuildCommand)
