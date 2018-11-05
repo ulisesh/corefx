@@ -20,7 +20,7 @@
     <WorkItemArchiveWildCard Condition="'$(WorkItemArchiveWildCard)' == ''">$(BUILD_SOURCESDIRECTORY)\*\tests\*\archive\tests\**\*.zip</WorkItemArchiveWildCard>
 
     <!-- If TargetQueues is used, let's copy it to Helix sdk item and replace + to ; if present. -->
-    <HelixTargetQueues>$([System.String]::Copy('$(TargetQueues)').Replace(',',';').Replace('+',';'))</HelixTargetQueues>
+    <HelixTargetQueues Condition="'$(TargetQueues)' != ''">$([System.String]::Copy('$(TargetQueues)').Replace(',',';').Replace('+',';'))</HelixTargetQueues>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(HelixCommand)' == ''">
