@@ -6,7 +6,7 @@ resources:
   - container: RhelContainer
     image: microsoft/dotnet-buildtools-prereqs:rhel7_prereqs_2
   - container: AlpineContainer
-    image: microsoft/dotnet-buildtools-prereqs:alpine-3.6-3148f11-20171119021156
+    image: microsoft/dotnet-buildtools-prereqs:alpine-3.6-e2521f8-20180716231200
 
 variables:
   _netcoreappWindowsQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
