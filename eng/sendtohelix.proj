@@ -42,5 +42,7 @@
         <Command>$(HelixCommand)</Command>
       </HelixWorkItem>
     </ItemGroup>
+
+    <Message Importance="High" Text="$(HelixtargetQueues)" />
   </Target>
 </Project>

@@ -16,7 +16,7 @@ jobs:
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
+      _sendToHelixArgs: eng/sendtohelix.proj /p:TargetQueues=$(helixTargetQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
       
       # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
@@ -56,6 +56,6 @@ jobs:
                 $(_targetOSParam)
         displayName: Compress Runtime Directory
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - script: $(_msbuildCommand) eng/sendtohelix.proj /p:TargetQueues=$(helixTargetQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
+      - script: $(_msbuildCommand) $(_sendToHelixArgs)
         displayName: Send to Helix
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
