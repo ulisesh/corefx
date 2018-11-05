@@ -36,10 +36,6 @@ jobs:
     container: ${{ parameters.container }}
 
     steps:
-      - script: $(_buildScript) -restore
-      - script: $(_msbuildCommand) $(_sendToHelixArgs)
-        displayName: Send to Helix
-        condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
       - script: $(_buildScript)
               $(_buildCommonArgs)
               -includetests
