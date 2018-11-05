@@ -36,8 +36,6 @@ jobs:
     container: ${{ parameters.container }}
 
     steps:
-      - script: $(_msbuildCommand) "eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)"
-        displayName: echo
       - script: $(_buildScript)
               $(_buildCommonArgs)
               -includetests
@@ -58,6 +56,6 @@ jobs:
                 $(_targetOSParam)
         displayName: Compress Runtime Directory
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - script: $(_msbuildCommand) eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
+      - script: $(_msbuildCommand) eng/sendtohelix.proj /p:TargetQueues=$(helixTargetQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
         displayName: Send to Helix
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
