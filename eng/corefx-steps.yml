@@ -36,7 +36,7 @@ jobs:
     container: ${{ parameters.container }}
 
     steps:
-      - script: echo "eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)"
+      - script: $(_msbuildCommand) "eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)"
         displayName: echo
       - script: $(_buildScript)
               $(_buildCommonArgs)
