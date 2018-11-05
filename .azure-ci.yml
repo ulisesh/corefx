@@ -55,6 +55,7 @@ jobs:
             helixTargetQueues: $(_linuxDefaultQueues)
             submitToHelix: true
             _dockerContainer: RhelContainer
+            _buildExtraArguments: ''
 
           # linux-musl x64 debug
           musl_x64_Debug:
@@ -63,10 +64,10 @@ jobs:
             framework: netcoreapp
             submitToHelix: false
             # _dockerContainer: AlpineContainer
-            buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
+            _buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
       pool:
         name: Hosted Ubuntu 1604
 
       targetOS: Linux
       container: $[ variables['_dockerContainer'] ]
-      # buildExtraArguments: $(_buildExtraArguments)
+      buildExtraArguments: $(_buildExtraArguments)
