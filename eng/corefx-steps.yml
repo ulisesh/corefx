@@ -7,6 +7,7 @@ parameters:
   testOuterloop: false
   buildExtraArguments: ''
   container: ''
+  buildScriptPrefix: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -15,11 +16,7 @@ jobs:
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\"
-                        /t:test
-                        /p:HelixAccessToken=$(_helixToken)
-                        /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }}
-                        $(_targetOSParam)
+      _sendToHelixArgs: eng/sendtohelix.proj /p:\"HelixTargetQueues=$(helixTargetQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
       
       # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
