@@ -9,10 +9,10 @@ resources:
     image: microsoft/dotnet-buildtools-prereqs:alpine-3.6-e2521f8-20180716231200
 
 variables:
-  # Helix target queues need to be separated by ;
-  _netcoreappWindowsQueues: Windows.7.Amd64.Open;Windows.81.Amd64.Open;Windows.10.Amd64.ClientRS4.ES.Open
+  # Helix target queues need to be separated by ;;
+  _netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ClientRS4.ES.Open
   _nanoQueue: Windows.10.Nano.Amd64.Open
-  _linuxDefaultQueues: Centos.74.Amd64.Open;RedHat.74.Amd64.Open;Debian.87.Amd64.Open;Ubuntu.1404.Amd64.Open;Ubuntu.1604.Amd64.Open;Ubuntu.1804.Amd64.Open;OpenSuse.423.Amd64.Open;Fedora.27.Amd64.Open
+  _linuxDefaultQueues: Centos.74.Amd64.Open+RedHat.74.Amd64.Open+Debian.87.Amd64.Open+Ubuntu.1404.Amd64.Open+Ubuntu.1604.Amd64.Open+Ubuntu.1804.Amd64.Open+OpenSuse.423.Amd64.Open+Fedora.27.Amd64.Open
 
 jobs:
   # Windows legs
@@ -27,7 +27,7 @@ jobs:
             _configuration: Debug
             _archGroup: x64
             framework: netcoreapp
-            helixQueues: $(_netcoreappWindowsQueues);$(_nanoQueue)
+            helixQueues: $(_netcoreappWindowsQueues)+$(_nanoQueue)
             submitToHelix: true
 
           # netcoreapp windows x86 release
@@ -59,13 +59,13 @@ jobs:
             _buildExtraArguments: ''
 
           # linux-musl x64 debug
-          musl_x64_Debug:
-            _configuration: Debug
-            _archGroup: x64
-            framework: netcoreapp
-            submitToHelix: false
-            _dockerContainer: AlpineContainer
-            _buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
+          # musl_x64_Debug:
+          #   _configuration: Debug
+          #   _archGroup: x64
+          #   framework: netcoreapp
+          #   submitToHelix: false
+          #   _dockerContainer: AlpineContainer
+          #   _buildExtraArguments: /p:RuntimeOs=linux-musl /p:PortableBuild=false
       pool:
         name: Hosted Ubuntu 1604
 

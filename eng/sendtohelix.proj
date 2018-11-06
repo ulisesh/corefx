@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.DotNet.Helix.Sdk">
+<Project InitialTargets="BuildHelixWorkItem" Sdk="Microsoft.DotNet.Helix.Sdk">
   <PropertyGroup>
     <!-- Set helix source -->
     <HelixSourcePrefix>pr/</HelixSourcePrefix>
@@ -29,8 +29,7 @@
     <HelixCorrelationPayload Include="$(HelixCorrelationPayload)" />
   </ItemGroup>
 
-  <Target Name="BuildHelixWorkItem"
-          BeforeTargets="Test">
+  <Target Name="BuildHelixWorkItem">
     <ItemGroup>
       <_WorkItem Include="$(WorkItemArchiveWildCard)" Exclude="$(HelixCorrelationPayload)" />
 
