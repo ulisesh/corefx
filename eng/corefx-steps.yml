@@ -56,6 +56,19 @@ jobs:
                 $(_targetOSParam)
         displayName: Compress Runtime Directory
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - script: $(_msbuildCommand) $(_sendToHelixArgs)
+      - script: $(_msbuildCommand) $(_sendToHelixArgs) /bl
         displayName: Send to Helix
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
+      - task: CopyFiles@2
+        displayName: Stage build logs
+        inputs:
+          sourceFolder: $(Build.SourcesDirectory)
+          contents: '*.binlog'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+        condition: succeededOrFailed()
+      - task: PublishBuildArtifacts@1
+        displayName: Publish build and test logs
+        inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: BinLogs
+          artifactType: container
