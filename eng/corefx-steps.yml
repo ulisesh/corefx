@@ -16,7 +16,7 @@ jobs:
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj /p:TargetQueues=$(helixTargetQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
+      _sendToHelixArgs: eng/sendtohelix.proj /v:n /p:HelixTargetQueues=\"$(helixQueues)\" /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.name }} $(_targetOSParam)
       
       # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
@@ -56,20 +56,20 @@ jobs:
                 $(_targetOSParam)
         displayName: Compress Runtime Directory
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - script: $(_msbuildCommand) $(_sendToHelixArgs) /bl
+      - script: $(_msbuildCommand) $(_sendToHelixArgs)
         displayName: Send to Helix
         condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - task: CopyFiles@2
-        displayName: Stage build logs
-        inputs:
-          sourceFolder: $(Build.SourcesDirectory)
-          contents: '*.binlog'
-          targetFolder: $(Build.ArtifactStagingDirectory)
-        condition: succeededOrFailed()
-      - task: PublishBuildArtifacts@1
-        displayName: Publish build and test logs
-        inputs:
-          pathToPublish: $(Build.ArtifactStagingDirectory)
-          artifactName: bl_${{ parameters.name }}_$(configuration)
-          artifactType: container
-        condition: succeededOrFailed()
+      # - task: CopyFiles@2
+      #   displayName: Stage build logs
+      #   inputs:
+      #     sourceFolder: $(Build.SourcesDirectory)
+      #     contents: '*.binlog'
+      #     targetFolder: $(Build.ArtifactStagingDirectory)
+      #   condition: succeededOrFailed()
+      # - task: PublishBuildArtifacts@1
+      #   displayName: Publish build and test logs
+      #   inputs:
+      #     pathToPublish: $(Build.ArtifactStagingDirectory)
+      #     artifactName: bl_${{ parameters.name }}_$(configuration)
+      #     artifactType: container
+      #   condition: succeededOrFailed()
