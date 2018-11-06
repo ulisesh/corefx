@@ -70,5 +70,6 @@ jobs:
         displayName: Publish build and test logs
         inputs:
           pathToPublish: $(Build.ArtifactStagingDirectory)
-          artifactName: BinLogs
+          artifactName: bl_${{ parameter.name }}_$(configuration)
           artifactType: container
+        condition: succeededOrFailed()

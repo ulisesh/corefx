@@ -38,7 +38,7 @@ jobs:
             helixTargetQueues: $(_netcoreappWindowsQueues)
             submitToHelix: true
       pool:
-        name: dotnet-external-temp
+        name: Hosted VS2017
       targetOS: Windows_NT
   
     # Linux legs
