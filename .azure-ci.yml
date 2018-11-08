@@ -40,7 +40,7 @@ jobs:
             _dockerContainer: RhelContainer
             _buildExtraArguments: ''
 
-          linux-musl x64 debug
+          # linux-musl x64 debug
           musl_x64_Debug:
             _configuration: Debug
             _archGroup: x64
