@@ -44,7 +44,7 @@ jobs:
       - ${{ if eq(parameters.submitToHelix, 'true') }}:
         - template: /eng/pipelines/helix.yml
           parameters:
-            targetOS: ${{ paremeters.targetOS }}
+            targetOS: ${{ parameters.targetOS }}
             archGroup: $(archGroup)
             configuration: $(configuration)
             helixQueues: $(helixQueues)
