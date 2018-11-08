@@ -16,7 +16,7 @@ jobs:
 
       # Helix stuff
       _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj /p:HelixTargetQueues=$(helixQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).$(framework).$(_configuration).$(_archGroup) $(_targetOSParam)
+      _sendToHelixArgs: eng/sendtohelix.proj /p:HelixTargetQueues=$(helixQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.targetOS }}.$(framework).$(_configuration).$(_archGroup) $(_targetOSParam)
       
       # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:

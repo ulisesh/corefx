@@ -16,7 +16,7 @@ variables:
 
 jobs:
   # Windows legs
-  - template: /eng/corefx-steps.yml
+  - template: /eng/pipelines/corefx-steps.yml
     parameters:
       name: Build
       strategy:
@@ -42,7 +42,7 @@ jobs:
       targetOS: Windows_NT
   
     # Linux legs
-  - template: /eng/corefx-steps.yml
+  - template: /eng/pipelines/corefx-steps.yml
     parameters:
       name: Linux
       strategy:
