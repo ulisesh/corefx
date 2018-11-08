@@ -10,6 +10,13 @@ resources:
 
 variables:
   # Helix target queues need to be separated by +
+
+  # Windows queues
+  _netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ClientRS4.ES.Open
+  _nanoQueue: Windows.10.Nano.Amd64.Open
+  _uapNetfxQueue: Windows.10.Amd64.ClientRS4.Open
+
+  # Linux queues
   _linuxDefaultQueues: Centos.74.Amd64.Open+RedHat.74.Amd64.Open+Debian.87.Amd64.Open+Ubuntu.1404.Amd64.Open+Ubuntu.1604.Amd64.Open+Ubuntu.1804.Amd64.Open+OpenSuse.423.Amd64.Open+Fedora.27.Amd64.Open
 
 jobs:

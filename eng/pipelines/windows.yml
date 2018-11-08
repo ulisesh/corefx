@@ -1,68 +1,65 @@
 # Windows legs
 jobs:
-  variables:
-    # Helix target queues need to be separated by +
-    _netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ClientRS4.ES.Open
-    _nanoQueue: Windows.10.Nano.Amd64.Open
-    _uapNetfxQueue: Windows.10.Amd64.ClientRS4.Open 
+  # variables:
+     
 
-    _poolName: Hosted VS2017
-    _targetOS: Windows_NT
+  #   _poolName: Hosted VS2017
+  #   _targetOS: Windows_NT
   
-  # Legs with Helix testing
-  - template: /eng/pipelines/corefx-base.yml
-    parameters:
-      name: Windows
-      strategy:
-        matrix:
-          # netcoreapp windows x64 debug
-          x64_Debug:
-            _configuration: Debug
-            _archGroup: x64
-            framework: netcoreapp
-            helixQueues: $(_netcoreappWindowsQueues)+$(_nanoQueue)
+# Legs with Helix testing
+- template: corefx-base.yml
+  parameters:
+    name: Windows
+    strategy:
+      matrix:
+        # netcoreapp windows x64 debug
+        x64_Debug:
+          _configuration: Debug
+          _archGroup: x64
+          framework: netcoreapp
+          helixQueues: $(_netcoreappWindowsQueues)+$(_nanoQueue)
 
-          # netcoreapp windows x86 release
-          x86_Release:
-            _configuration: Release
-            _archGroup: x86
-            framework: netcoreapp
-            helixQueues: $(_netcoreappWindowsQueues)
+        # netcoreapp windows x86 release
+        x86_Release:
+          _configuration: Release
+          _archGroup: x86
+          framework: netcoreapp
+          helixQueues: $(_netcoreappWindowsQueues)
 
-          NETFX_x86_Release:
-            _configuration: Release
-            _archGroup: x86
-            framework: netfx
-            helixQueues: $(_uapNetfxQueue)
+        NETFX_x86_Release:
+          _configuration: Release
+          _archGroup: x86
+          framework: netfx
+          helixQueues: $(_uapNetfxQueue)
 
-          UWP_CoreCLR_x64_Debug:
-            _configuration: Debug
-            _archGroup: x64
-            framework: uap
-            helixQueues: $(_uapNetfxQueue)
+        UWP_CoreCLR_x64_Debug:
+          _configuration: Debug
+          _archGroup: x64
+          framework: uap
+          helixQueues: $(_uapNetfxQueue)
 
-      pool:
-        name: $(_poolName)
-      targetOS: $(_targetOS)
+    pool:
+      name: $(Hosted VS2017)
+    targetOS: $(Windows_NT)
 
   # Legs without Helix testing
 - template: /eng/pipelines/corefx-base.yml
   parameters:
-      name: Windows
-      strategy:
-        matrix:
-          # Packaging All Configurations
-          # Packaging_x64_Debug:
-          #   _configuration: Debug
-          #   _archGroup: x64
-          #   framework: allconfigurations
+    name: Windows
+    strategy:
+      matrix:
+        # Packaging All Configurations
+        # Packaging_x64_Debug:
+        #   _configuration: Debug
+        #   _archGroup: x64
+        #   framework: allconfigurations
 
-          UWP_NETNative_x86_Release:
-            _configuration: Release
-            _archGroup: x86
-            framework: uapaot
+        UWP_NETNative_x86_Release:
+          _configuration: Release
+          _archGroup: x86
+          framework: uapaot
 
-      submitToHelix: false
-      pool:
-        name: $(_poolName)
-      targetOS: $(_targetOS)
+    submitToHelix: false
+    pool:
+      name: $(Hosted VS2017)
+    targetOS: $(Windows_NT)
