@@ -28,7 +28,6 @@ jobs:
     parameters:
       name: Linux
       strategy:
-        maxParallel: 99
         matrix:
           # netcoreapp linux x64 release
           x64_Release:
