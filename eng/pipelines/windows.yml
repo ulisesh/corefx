@@ -38,6 +38,11 @@ jobs:
           framework: uap
           helixQueues: $(_uapNetfxQueue)
 
+        UWP_NETNative_x86_Release:
+          _configuration: Release
+          _archGroup: x86
+          framework: uapaot
+
     pool:
       name: Hosted VS2017
     targetOS: Windows_NT

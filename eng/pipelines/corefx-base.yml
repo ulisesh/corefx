@@ -44,8 +44,8 @@ jobs:
         - template: /eng/pipelines/helix.yml
           parameters:
             targetOS: ${{ parameters.targetOS }}
-            archGroup: $(archGroup)
-            configuration: $(configuration)
+            archGroup: $(_archGroup)
+            configuration: $(_configuration)
             helixQueues: $(helixQueues)
             msbuildScript: $(_msbuildCommand)
             framework: $(framework)
