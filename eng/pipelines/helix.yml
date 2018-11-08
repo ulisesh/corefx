@@ -1,0 +1,27 @@
+parameters:
+  targetOS: ''
+  archGroup: ''
+  configuration: ''
+  helixQueues: ''
+  helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
+  waitForCompletion: true
+  msbuildScript: ''
+  framework: ''
+
+steps:
+  - script: ${{ parameters.msbuildScript }}
+          src/upload-tests.proj
+          /t:CompressRuntimeDir
+          /p:TargetGroup=${{ parameters.framework }}
+          /p:ArchGroup=${{ parameters.archGroup }}
+          /p:ConfigurationGroup=${{ parameters.configuration }}
+          /p:TargetOS=${{ parameters.targetOS }}
+    displayName: Compress Runtime Directory
+  - script: ${{ parameters.msbuildScript }}
+            eng/sendtohelix.proj
+            /t:test
+            /p:HelixTargetQueues=${{ parameters.helixQueues }}
+            /p:HelixAccessToken=${{ parameters.helixToken }}
+            /p:HelixBuild=$(Build.BuildNumber).${{ parameters.targetOS }}.${{ parameters.framework }}.${{ parameters.configuration }}.${{ parameters.archGroup }}
+            /p:TargetOS=${{ parameters.targetOS }}
+    displayName: Send to Helix

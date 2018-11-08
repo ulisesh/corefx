@@ -9,37 +9,12 @@ resources:
     image: microsoft/dotnet-buildtools-prereqs:alpine-3.6-e2521f8-20180716231200
 
 variables:
-  # Helix target queues need to be separated by ;;
-  _netcoreappWindowsQueues: Windows.7.Amd64.Open+Windows.81.Amd64.Open+Windows.10.Amd64.ClientRS4.ES.Open
-  _nanoQueue: Windows.10.Nano.Amd64.Open
+  # Helix target queues need to be separated by +
   _linuxDefaultQueues: Centos.74.Amd64.Open+RedHat.74.Amd64.Open+Debian.87.Amd64.Open+Ubuntu.1404.Amd64.Open+Ubuntu.1604.Amd64.Open+Ubuntu.1804.Amd64.Open+OpenSuse.423.Amd64.Open+Fedora.27.Amd64.Open
 
 jobs:
-  # Windows legs
-  - template: /eng/pipelines/corefx-steps.yml
-    parameters:
-      name: Build
-      strategy:
-        maxParallel: 99
-        matrix:
-          # netcoreapp windows x64 debug
-          Windows_x64_Debug:
-            _configuration: Debug
-            _archGroup: x64
-            framework: netcoreapp
-            helixQueues: $(_netcoreappWindowsQueues)+$(_nanoQueue)
-            submitToHelix: true
-
-          # netcoreapp windows x86 release
-          Windows_x86_Release:
-            _configuration: Release
-            _archGroup: x86
-            framework: netcoreapp
-            helixQueues: $(_netcoreappWindowsQueues)
-            submitToHelix: true
-      pool:
-        name: Hosted VS2017
-      targetOS: Windows_NT
+  # Include Windows legs
+  - template: /eng/pipelines/windows.yml
   
     # Linux legs
   - template: /eng/pipelines/corefx-steps.yml

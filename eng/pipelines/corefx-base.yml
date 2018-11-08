@@ -5,32 +5,25 @@ parameters:
   skipTests: true
   targetOS: ''
   testOuterloop: false
-  buildExtraArguments: ''
   container: ''
   buildScriptPrefix: ''
+  submitToHelix: true
 
 jobs:
   - job: ${{ parameters.name }}
     variables:
-      _targetOSParam: /p:TargetOS=${{ parameters.targetOS }}
-
-      # Helix stuff
-      _helixToken: $(BotAccount-dotnet-github-anon-kaonashi-bot-helix-token)
-      _sendToHelixArgs: eng/sendtohelix.proj /p:HelixTargetQueues=$(helixQueues) /t:test /p:HelixAccessToken=$(_helixToken) /p:HelixBuild=$(Build.BuildNumber).${{ parameters.targetOS }}.$(framework).$(_configuration).$(_archGroup) $(_targetOSParam)
-      
       # OS Specific commands
       ${{ if eq(parameters.targetOS, 'Windows_NT') }}:
         _buildScript: build.cmd
-        _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0
-        _buildCommonArgs: -ci
+        _msbuildCommand: powershell -ExecutionPolicy ByPass -NoProfile eng\common\msbuild.ps1 -warnaserror:0 -ci
       ${{ if ne(parameters.targetOS, 'Windows_NT') }}:
         _buildScript: ./build.sh
-        _msbuildCommand: ./eng/common/msbuild.sh --warnaserror false
-        _buildCommonArgs: --ci
+        _msbuildCommand: ./eng/common/msbuild.sh --warnaserror false --ci
 
     pool:
       ${{ insert }}: ${{ parameters.pool }}
     strategy:
+      maxParallel: 99
       ${{ insert }}: ${{ parameters.strategy }}
 
     container: ${{ parameters.container }}
@@ -47,29 +40,13 @@ jobs:
               /p:Outerloop=${{ parameters.testOuterloop }}
               ${{ parameters.buildExtraArguments }}
         displayName: Build Sources and Tests
-
-      - script: $(_msbuildCommand)
-                src/upload-tests.proj
-                /t:CompressRuntimeDir
-                /p:ArchGroup=$(_archGroup)
-                /p:ConfigurationGroup=$(_configuration)
-                $(_targetOSParam)
-        displayName: Compress Runtime Directory
-        condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      - script: $(_msbuildCommand) $(_sendToHelixArgs)
-        displayName: Send to Helix
-        condition: and(succeeded(), eq(variables['submitToHelix'], 'true'))
-      # - task: CopyFiles@2
-      #   displayName: Stage build logs
-      #   inputs:
-      #     sourceFolder: $(Build.SourcesDirectory)
-      #     contents: '*.binlog'
-      #     targetFolder: $(Build.ArtifactStagingDirectory)
-      #   condition: succeededOrFailed()
-      # - task: PublishBuildArtifacts@1
-      #   displayName: Publish build and test logs
-      #   inputs:
-      #     pathToPublish: $(Build.ArtifactStagingDirectory)
-      #     artifactName: bl_${{ parameters.name }}_$(configuration)
-      #     artifactType: container
-      #   condition: succeededOrFailed()
+      
+      - ${{ if eq(paremeters.submitToHelix, 'true') }}:
+        - template: /eng/pipelines/helix.yml
+          parameters:
+            targetOS: ${{ paremeters.targetOS }}
+            archGroup: $(archGroup)
+            configuration: $(configuration)
+            helixQueues: $(helixQueues)
+            msbuildScript: $(_msbuildCommand)
+            framework: $(framework)
