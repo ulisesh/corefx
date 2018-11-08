@@ -39,8 +39,8 @@ jobs:
           helixQueues: $(_uapNetfxQueue)
 
     pool:
-      name: $(Hosted VS2017)
-    targetOS: $(Windows_NT)
+      name: Hosted VS2017
+    targetOS: Windows_NT
 
   # Legs without Helix testing
 - template: /eng/pipelines/corefx-base.yml
@@ -61,5 +61,5 @@ jobs:
 
     submitToHelix: false
     pool:
-      name: $(Hosted VS2017)
-    targetOS: $(Windows_NT)
+      name: Hosted VS2017
+    targetOS: Windows_NT
