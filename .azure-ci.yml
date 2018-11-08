@@ -24,7 +24,7 @@ jobs:
   - template: /eng/pipelines/windows.yml
   
     # Linux legs
-  - template: /eng/pipelines/corefx-steps.yml
+  - template: /eng/pipelines/corefx-base.yml
     parameters:
       name: Linux
       strategy:
