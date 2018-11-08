@@ -41,7 +41,7 @@ jobs:
               ${{ parameters.buildExtraArguments }}
         displayName: Build Sources and Tests
       
-      - ${{ if eq(paremeters.submitToHelix, 'true') }}:
+      - ${{ if eq(parameters.submitToHelix, 'true') }}:
         - template: /eng/pipelines/helix.yml
           parameters:
             targetOS: ${{ paremeters.targetOS }}
