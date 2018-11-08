@@ -45,7 +45,7 @@ jobs:
   # Legs without Helix testing
 - template: /eng/pipelines/corefx-base.yml
   parameters:
-    name: Windows
+    name: Build
     strategy:
       matrix:
         # Packaging All Configurations
